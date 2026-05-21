@@ -438,12 +438,8 @@ window.toggleAuthMode = (mode) => {
 
 window.handleLogoClick = (e) => {
   e.preventDefault();
-  if (currentUser) {
-    if (hasUnsavedEdits) {
-      showUnsavedModal(() => { hasUnsavedEdits = false; showLanding(); });
-    } else {
-      showLanding();
-    }
+  if (hasUnsavedEdits) {
+    showUnsavedModal(() => { hasUnsavedEdits = false; showLanding(); });
   } else {
     showLanding();
   }
@@ -1648,6 +1644,7 @@ async function syncTripsFromSupabase() {
       .eq('user_id', currentUser.id);
 
     if (err1) throw err1;
+    if (err2) throw err2;
 
     // Combine results
     const trips = [...(owned || [])];
