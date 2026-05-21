@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Splitaway — Premium Trip Splitting</title>
+  <meta name="theme-color" content="#111319">
+  <meta name="description" content="Split expenses with style. Premium fintech-inspired trip manager with real-time sync.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Noto+Serif:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <!-- LOGO — styled with CSS, not a plain link -->
+    <a href="#" class="logo" onclick="handleLogoClick(event)">
+      <div class="logo-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M21 16.5L13 11.5V3.5C13 2.67 12.33 2 11.5 2C10.67 2 10 2.67 10 3.5V11.5L2 16.5V19L10 16.5V21L8 22.5V24L11.5 23L15 24V22.5L13 21V16.5L21 19V16.5Z" fill="white"/></svg>
+      </div>
+      <span class="logo-wordmark">Split<em>away</em></span>
+    </a>
+
+    <div class="header-actions">
+      <!-- Save indicator — clickable to save -->
+      <div id="saveIndicator" class="save-indicator" style="display:none" onclick="manualSave()">
+        <div class="save-dot"></div>
+        <span>Synced</span>
+      </div>
+
+      <!-- MY TRIPS button — now LEFT of avatar -->
+      <button class="btn btn-ghost header-trips-btn" onclick="openTripsPanel()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>My Trips</span>
+      </button>
+
+      <!-- AVATAR — now RIGHT of My Trips -->
+      <div id="landingProfileBtn" class="avatar-circle" style="display:none" onclick="toggleProfileDropdown('landingProfileDropdown')">?</div>
+      <div id="landingProfileDropdown" class="profile-dropdown">
+        <div class="dropdown-header" id="dropdownUserName">Account</div>
+        <button onclick="openManageAccount()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
+          Manage Account
+        </button>
+        <div class="dropdown-divider"></div>
+        <button class="danger" onclick="performLogout()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Logout
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ LANDING VIEW ═══ -->
+<div id="landingView" class="landing-view">
+  <section class="hero">
+    <div class="hero-eyebrow">✈ Trip Expense Splitting, Reimagined</div>
+    <h2 class="hero-title">Split Trips.<br><span>Zero Friction.</span></h2>
+    <p class="hero-desc">The modern fintech approach to group expenses. No spreadsheets, no awkward math — just pure adventure with friends.</p>
+    <div class="hero-actions-container">
+      <button class="btn btn-amber" onclick="guardedShowAuth('signup')">Get Started Free</button>
+      <button class="btn btn-outline" onclick="guardedShowAuth('login')">Login</button>
+    </div>
+    <div class="hero-pills">
+      <span class="pill">⚡ Real-time sync</span>
+      <span class="pill">🔒 Secure</span>
+      <span class="pill">📱 Offline ready</span>
+      <span class="pill">🧮 Smart settlement</span>
+    </div>
+  </section>
+
+  <!-- FEATURES SECTION -->
+  <section class="features">
+    <h3 class="section-title">Why Choose Splitaway?</h3>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">💸</div>
+        <h4>Smart Settlements</h4>
+        <p>Our algorithm minimizes the number of transactions needed to settle up. Pay back the group in the fewest clicks possible.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">☁️</div>
+        <h4>Cloud Sync</h4>
+        <p>Your trips are backed up to the cloud instantly. Access your expenses across all your devices, anytime, anywhere.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎨</div>
+        <h4>Premium Experience</h4>
+        <p>Say goodbye to clunky spreadsheets. Splitaway features a beautiful, dark-mode first design crafted for modern users.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="logo-wordmark">Split<em>away</em></div>
+        <p>The premium fintech-inspired trip manager.</p>
+      </div>
+      <div class="footer-links">
+        <div>
+          <h4>Product</h4>
+          <a href="features.html">Features</a>
+          <a href="mailto:mehtaajay8873@gmail.com">Feedback</a>
+          <a href="security.html">Security</a>
+        </div>
+        <div>
+          <h4>Company</h4>
+          <a href="about.html">About</a>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2026 Splitaway. All rights reserved.
+    </div>
+  </footer>
+</div>
+
+<!-- ═══ AUTH VIEW ═══ -->
+<div id="authView" class="auth-view">
+  <div class="auth-box">
+    <div class="auth-logo-mark">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M21 16.5L13 11.5V3.5C13 2.67 12.33 2 11.5 2C10.67 2 10 2.67 10 3.5V11.5L2 16.5V19L10 16.5V21L8 22.5V24L11.5 23L15 24V22.5L13 21V16.5L21 19V16.5Z" fill="currentColor"/></svg>
+    </div>
+    <h2 id="authTitle" class="auth-heading">Welcome Back</h2>
+    <p id="authSub" class="auth-sub">Join the new standard of trip splitting.</p>
+
+    <div id="authNameGroup" style="display:none" class="form-group">
+      <label class="form-label">Full Name</label>
+      <input type="text" id="authName" class="form-input" placeholder="John Doe">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email Address</label>
+      <input type="email" id="authEmail" class="form-input" placeholder="name@example.com">
+    </div>
+    <div id="authPasswordGroup" class="form-group" style="margin-bottom:28px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <label class="form-label" style="margin-bottom:0">Password</label>
+        <a href="#" id="authForgotLink" class="auth-link" style="margin-top:0;font-size:11px" onclick="toggleAuthMode('forgot'); return false;">Forgot password?</a>
+      </div>
+      <input type="password" id="authPassword" class="form-input" placeholder="••••••••">
+    </div>
+
+    <div id="authUpdateGroup" style="display:none">
+      <div class="form-group" style="margin-bottom:28px">
+        <label class="form-label">New Password</label>
+        <input type="password" id="authNewPassword" class="form-input" placeholder="••••••••">
+      </div>
+    </div>
+
+    <button id="authBtnLogin" class="btn btn-amber btn-full" style="margin-bottom:14px" onclick="performAuth('login')">Sign In</button>
+    <button id="authBtnSignup" class="btn btn-amber btn-full" style="margin-bottom:14px;display:none" onclick="performAuth('signup')">Create Account</button>
+    <button id="authBtnForgot" class="btn btn-amber btn-full" style="margin-bottom:14px;display:none" onclick="performAuth('forgot')">Send Reset Email</button>
+    <button id="authBtnUpdate" class="btn btn-amber btn-full" style="margin-bottom:14px;display:none" onclick="performPasswordUpdate()">Update Password</button>
+    
+    <a id="authToggleLink" href="#" class="auth-link" onclick="toggleAuthMode('signup'); return false;">Don't have an account? Sign up</a>
+  </div>
+</div>
+
+<!-- ═══ APP SECTION ═══ -->
+<div id="appSection" class="container app-container" style="display:none">
+  <main id="app" class="phase-name">
+    <div class="left-col">
+
+      <!-- Card: Trip Name -->
+      <div class="card owner-only" id="tripNameCard">
+        <div class="card-title">
+          <div class="card-icon amber-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 16.5L13 11.5V3.5C13 2.67 12.33 2 11.5 2C10.67 2 10 2.67 10 3.5V11.5L2 16.5V19L10 16.5V21L8 22.5V24L11.5 23L15 24V22.5L13 21V16.5L21 19V16.5Z" fill="white"/></svg>
+          </div>
+          <span id="tripTitleDisplay">Trip Details</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Where are we going?</label>
+          <input type="text" id="tripName" class="form-input" placeholder="e.g. Manali 2024, Goa Trip…">
+        </div>
+        <button class="btn btn-amber btn-full" onclick="goToPhase('friends')">
+          Next: Add Friends
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+
+      <!-- Card: Friends -->
+      <div class="card owner-only" id="wizardFriendsSection">
+        <div class="card-title">
+          <div class="card-icon teal-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="white" stroke-width="2" stroke-linecap="round"/><circle cx="9" cy="7" r="4" stroke="white" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          Friends
+          <span class="count-badge"><span id="friendCount">0</span></span>
+        </div>
+        <div class="add-friend-row form-group">
+          <input type="text" id="friendNameInput" class="form-input" placeholder="Enter friend's name" onkeydown="if(event.key==='Enter') addFriend()">
+          <button class="btn btn-amber" onclick="addFriend()">Add</button>
+        </div>
+        <div id="friendsGrid" class="friends-grid"></div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px">
+          <button class="btn btn-outline" onclick="goToPhase('name')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Back
+          </button>
+          <button class="btn btn-amber" onclick="goToPhase('done')">
+            Next
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Card: Log Expense -->
+      <div class="card owner-only" id="expenseCard">
+        <div class="card-title">
+          <div class="card-icon amber-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14.93V18h-2v-1.07A4 4 0 0 1 8 13h2a2 2 0 0 0 4 0c0-1.1-.9-2-2-2a4 4 0 0 1 0-8V2h2v1.07A4 4 0 0 1 16 7h-2a2 2 0 0 0-4 0c0 1.1.9 2 2 2a4 4 0 0 1 1 7.93z" fill="white"/></svg>
+          </div>
+          Log Expense
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <input type="text" id="expDesc" class="form-input" placeholder="Lunch, Fuel, Stay…">
+        </div>
+        <div class="two-col-grid">
+          <div class="form-group">
+            <label class="form-label">Amount (<span class="currency-sym-label">₹</span>)</label>
+            <input type="number" id="expAmount" class="form-input" placeholder="0.00" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <select id="expCat" class="form-select">
+              <option>🍜 Food</option>
+              <option>🚗 Transport</option>
+              <option>🏨 Stay</option>
+              <option>🍺 Drink</option>
+              <option>🎉 Activity</option>
+              <option>⚡ Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Who Paid?</label>
+          <select id="expPayer" class="form-select"></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Split Among</label>
+          <div id="splitGrid" class="split-grid"></div>
+          <div class="split-actions">
+            <button class="btn btn-ghost" onclick="selectAllSplit()">All</button>
+            <button class="btn btn-ghost" onclick="clearSplit()">None</button>
+          </div>
+        </div>
+        <button class="btn btn-amber btn-full" onclick="addExpense()" style="margin-bottom:12px">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+          Add Expense
+        </button>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px">
+           <button class="btn btn-outline" onclick="goToPhase('friends')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Back to Friends
+          </button>
+          <button class="btn btn-ghost" onclick="goToPhase('view')">
+            View Results
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-col">
+      <!-- Expenses List -->
+      <div class="card" style="margin-bottom:24px">
+        <div class="card-title">
+          <span class="card-emoji">🧾</span>
+          All Expenses
+          <span class="count-badge"><span id="expCount">0</span></span>
+        </div>
+        <ul id="expensesList" class="expenses-list"></ul>
+      </div>
+
+      <!-- Balances -->
+      <div class="card" style="margin-bottom:24px">
+        <div class="card-title"><span class="card-emoji">⚖️</span> Balances</div>
+        <ul id="balancesList" class="balances-list"></ul>
+        <div class="divider"></div>
+        <div class="total-row">
+          <span class="form-label" style="margin:0">Total Spent</span>
+          <span id="totalSpent" class="total-amount">₹0</span>
+        </div>
+      </div>
+
+      <!-- Settlement -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Smart Settlement</h3>
+            <p class="card-subtitle">Optimized transactions to clear all dues</p>
+          </div>
+          <button id="btnRecordPayment" class="btn" onclick="openSettleSuggestModal()">Record Payment</button>
+        </div>
+        <div id="settleList" class="settle-list"></div>
+        <div id="settleActions" style="margin-top: 16px; display: none;">
+          <button class="btn btn-ghost btn-full" onclick="openSettleSuggestModal()">
+            🤝 I have cleared the settlement
+          </button>
+        </div>
+        <div class="card-footer-actions">
+          <button class="btn btn-ghost" onclick="shareTripLink()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Share
+          </button>
+          <button id="btnSaveTrip" class="btn btn-ghost owner-only" onclick="manualSave()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><polyline points="17 21 17 13 7 13 7 21" stroke="currentColor" stroke-width="2"/><polyline points="7 3 7 8 15 8" stroke="currentColor" stroke-width="2"/></svg>
+            Save
+          </button>
+          <button id="btnEditTrip" class="btn btn-amber owner-only" onclick="goToPhase('done')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+            Edit Trip
+          </button>
+          <button id="btnSuggestExpense" class="btn btn-amber guest-only" onclick="openSuggestionModal()">
+            💸 I paid for the group
+          </button>
+        </div>
+      </div>
+
+      <!-- ═══ SUGGESTIONS CARD (OWNER ONLY) ═══ -->
+      <div id="suggestionsCard" class="card owner-only" style="margin-top:24px">
+        <div class="card-title">
+          <span class="card-emoji">💡</span>
+          Suggestions
+          <span class="count-badge"><span id="suggestionCount">0</span></span>
+        </div>
+        <ul id="suggestionsList" class="expenses-list"></ul>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ═══ TOAST ═══ -->
+<div id="toast"></div>
+
+<!-- ═══ TRIPS SIDE PANEL ═══ -->
+<div id="tripsOverlay" class="overlay" onclick="closeTripsPanel()"></div>
+<div id="tripsPanel" class="side-panel">
+  <div class="side-panel-header">
+    <h3 class="panel-title">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 16.5L13 11.5V3.5C13 2.67 12.33 2 11.5 2C10.67 2 10 2.67 10 3.5V11.5L2 16.5V19L10 16.5V21L8 22.5V24L11.5 23L15 24V22.5L13 21V16.5L21 19V16.5Z" fill="currentColor"/></svg>
+      My Trips
+    </h3>
+    <button class="icon-btn" onclick="closeTripsPanel()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div id="tripsPanelBody" class="panel-body"></div>
+  <div class="panel-footer">
+    <input type="text" id="recoverTripInput" class="form-input" placeholder="Recover trip by ID…" style="margin-bottom:10px">
+    <button class="btn btn-amber btn-full" style="margin-bottom:10px" onclick="recoverTripManually()">Recover Trip</button>
+    <button class="btn btn-outline btn-full" onclick="newTrip()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+      New Trip
+    </button>
+  </div>
+</div>
+
+<!-- ═══ SETTLE SUGGEST MODAL ═══ -->
+<div id="settleSuggestModal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-icon-wrap">🤝</div>
+    <div class="modal-title">Record Payment</div>
+    <div class="modal-desc">Notify the owner that you've settled a debt.</div>
+    
+    <div style="margin-top:24px; text-align:left">
+      <div class="form-group">
+        <label class="form-label">Who Paid?</label>
+        <select id="setSugFrom" class="form-select"></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">To Whom?</label>
+        <select id="setSugTo" class="form-select"></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Amount</label>
+        <input type="number" id="setSugAmount" class="form-input" placeholder="0.00" step="0.01">
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-amber btn-full" onclick="submitSettleSuggestion()">Send Suggestion</button>
+      <button class="btn btn-outline btn-full" onclick="closeSettleSuggestModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ UNSAVED CHANGES MODAL ═══ -->
+<div id="unsavedModal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-icon-wrap">⚠️</div>
+    <h3 class="modal-title">Unsaved Changes</h3>
+    <p class="modal-desc">You have unsaved changes to this trip. What would you like to do before leaving?</p>
+    <div class="modal-actions">
+      <button class="btn btn-amber btn-full" onclick="modalSaveAndLeave()" id="modalSaveBtn">Save &amp; Leave</button>
+      <button class="btn btn-coral btn-full" onclick="modalDiscardAndLeave()">Discard Changes</button>
+      <button class="btn btn-ghost btn-full" onclick="closeUnsavedModal()">Keep Editing</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MANAGE ACCOUNT MODAL ═══ -->
+<div id="manageAccountModal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-icon-wrap" id="accountAvatarBig" style="width:64px;height:64px;border-radius:18px;display:grid;place-items:center;font-size:28px;font-weight:800;color:#1a1209;margin:0 auto 20px;background:var(--amber)">?</div>
+    
+    <!-- Mode 1: Display -->
+    <div id="accountNameDisplay" style="display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:8px">
+      <h3 class="modal-title" id="accountModalName" style="margin-bottom:0">Account</h3>
+      <button class="icon-btn" style="width:28px; height:28px" onclick="toggleNameEdit(true)" title="Edit Name">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+
+    <!-- Mode 2: Edit -->
+    <div id="accountNameEdit" style="display:none; gap:8px; margin-bottom:12px">
+      <input type="text" id="accountNameInput" class="form-input" style="padding:10px 14px">
+      <button class="btn btn-amber" style="padding:10px; min-width:unset" onclick="saveDisplayName()" title="Save">✓</button>
+      <button class="btn btn-outline" style="padding:10px; min-width:unset" onclick="toggleNameEdit(false)" title="Cancel">✕</button>
+    </div>
+
+    <p class="modal-desc" id="accountModalEmail" style="word-break:break-all;font-size:13px"></p>
+    
+    <div class="modal-actions" style="margin-top:28px">
+      <button class="btn btn-outline btn-full" style="font-size:12px" onclick="sendPasswordReset()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M15 3h6v6M10 14L21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Change Password (email link)
+      </button>
+      <div class="divider" style="margin:16px 0"></div>
+      <button class="btn btn-coral btn-full" onclick="performLogout()">Logout</button>
+      <button class="btn btn-ghost btn-full" onclick="closeManageAccount()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PWA INSTALL POPUP ═══ -->
+<div id="pwaInstallPopup" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.82); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); z-index:10000; align-items:center; justify-content:center; padding:24px;">
+  <div style="background:linear-gradient(145deg, var(--surface-high) 0%, rgba(255,170,0,0.03) 100%); border:1px solid rgba(255,170,0,0.3); border-radius:var(--radius); padding:40px 36px; max-width:420px; width:100%; text-align:center; box-shadow:var(--shadow-lg), 0 0 60px rgba(255,170,0,0.1); position:relative; animation:pwaPopIn 0.4s cubic-bezier(0.34,1.56,0.64,1);">
+    <button onclick="closePwaPopup()" style="position:absolute; top:12px; right:12px; width:32px; height:32px; border-radius:50%; background:var(--ghost); border:none; color:var(--text-muted); cursor:pointer; display:grid; place-items:center; font-size:14px; transition:0.2s; line-height:1;" onmouseover="this.style.background='var(--ghost-hover)'; this.style.color='var(--ink)'; this.style.transform='scale(1.1)';" onmouseout="this.style.background='var(--ghost)'; this.style.color='var(--text-muted)'; this.style.transform='scale(1)';">✕</button>
+
+    <div style="width:72px; height:72px; background:linear-gradient(135deg, var(--amber), #e6900a); border-radius:18px; display:grid; place-items:center; margin:0 auto 20px; box-shadow:0 8px 32px rgba(255,191,0,0.35);">
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none"><path d="M21 16.5L13 11.5V3.5C13 2.67 12.33 2 11.5 2C10.67 2 10 2.67 10 3.5V11.5L2 16.5V19L10 16.5V21L8 22.5V24L11.5 23L15 24V22.5L13 21V16.5L21 19V16.5Z" fill="white"/></svg>
+    </div>
+
+    <h3 style="font-family:'Noto Serif',serif; font-size:1.6rem; font-weight:900; color:var(--ink); margin-bottom:12px;">Install Splitaway</h3>
+    <p style="color:var(--text-secondary); font-size:14px; line-height:1.7; margin-bottom:28px; max-width:320px; margin-left:auto; margin-right:auto;">Add to your home screen for a full-screen, offline-ready experience - no app store needed.</p>
+
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      <button class="btn btn-amber btn-full" onclick="installPWA()" style="display:flex; align-items:center; justify-content:center; gap:8px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Install App
+      </button>
+      <button class="btn btn-ghost btn-full" onclick="closePwaPopup()">Not Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUGGESTION MODAL -->
+<div id="suggestionModal" class="modal-overlay">
+  <div class="modal-box" style="max-width: 460px; text-align: left;">
+    <div class="modal-icon-wrap" style="font-size:28px;">💸</div>
+    <h3 class="modal-title">Suggest an expense</h3>
+    <p class="modal-desc">Tell the trip owner what you paid for.</p>
+    <div class="form-group">
+      <label class="form-label">I am</label>
+      <select id="sugPayer" class="form-select"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description</label>
+      <input type="text" id="sugDesc" class="form-input" placeholder="Dinner, fuel...">
+    </div>
+    <div class="two-col-grid">
+      <div class="form-group">
+        <label class="form-label">Amount</label>
+        <input type="number" id="sugAmount" class="form-input" placeholder="0.00" min="0">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <select id="sugCat" class="form-select">
+          <option>🍜 Food</option>
+          <option>🚗 Transport</option>
+          <option>🏨 Stay</option>
+          <option>🍺 Drink</option>
+          <option>🎉 Activity</option>
+          <option>⚡ Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Split among</label>
+      <div id="sugSplitGrid" class="split-grid"></div>
+      <div class="split-actions">
+        <button class="btn btn-ghost" onclick="selectAllSugSplit()">All</button>
+        <button class="btn btn-ghost" onclick="clearSugSplit()">None</button>
+      </div>
+    </div>
+    <div class="modal-actions" style="margin-top:24px">
+      <button class="btn btn-amber btn-full" onclick="submitSuggestion()">Send to owner</button>
+      <button class="btn btn-ghost btn-full" onclick="closeSuggestionModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
+<script src="app.js"></script>
+
+<style>
+@keyframes pwaPopIn {
+  from { opacity:0; transform:scale(0.85) translateY(20px); }
+  to   { opacity:1; transform:scale(1) translateY(0); }
+}
+
+#pwaInstallPopup { display:none; }
+
+/* ── Phase transitions ── */
+#app.phase-name #wizardFriendsSection,
+#app.phase-name #expenseCard        { display:none; }
+
+#app.phase-friends #tripNameCard,
+#app.phase-friends #expenseCard     { display:none; }
+
+#app.phase-done #tripNameCard,
+#app.phase-done #wizardFriendsSection { display:none; }
+
+#app.phase-view .left-col { display: none; }
+#app.phase-view { grid-template-columns: 1fr; max-width: 800px; margin: 0 auto; }
+#app.phase-view .expense-delete { display: none; }
+#app.phase-view #btnSaveTrip { display: none; }
+
+/* Visibility toggles based on role and phase */
+#btnEditTrip, #btnSuggestExpense { display: none; }
+
+#app.phase-view.is-owner #btnEditTrip { display: inline-flex; }
+#app.phase-view:not(.is-owner) #btnSuggestExpense { display: inline-flex; }
+
+/* Suggestions card visibility */
+#suggestionsCard { display: none; }
+#app.phase-view.is-owner #suggestionsCard { display: block; }
+
+/* ── Activation classes ── */
+.active                   { display:block  !important; opacity:1 !important; }
+.auth-view.active         { display:flex   !important; }
+.landing-view.active      { display:flex   !important; }
+#tripsOverlay.active      { display:block; }
+#tripsPanel.active        { transform:translateX(0); }
+#unsavedModal.active      { display:flex;  }
+#manageAccountModal.active{ display:flex;  }
+#suggestionModal.active   { display:flex;  }
+
+/* ── Balance row classes (used by JS) ── */
+.bal-pos  { color:var(--teal);  font-weight:700; }
+.bal-neg  { color:var(--coral); font-weight:700; }
+.bal-zero { color:var(--text-muted); font-weight:600; }
+</style>
+
+<!-- ═══ NOTIFICATIONS ═══ -->
+<div id="toast"></div>
+
+<!-- Service Worker Registration -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(err => {
+        console.error('ServiceWorker registration failed: ', err);
+      });
+    });
+  }
+</script>
+</body>
+</html>

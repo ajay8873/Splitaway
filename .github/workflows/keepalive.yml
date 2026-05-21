@@ -1,0 +1,21 @@
+name: Supabase Keepalive
+
+on:
+  schedule:
+    # The cron expression '0 0 */6 * *' runs at 00:00 UTC every 6th day of the month 
+    # (e.g., the 1st, 7th, 13th, 19th, 25th, 31st). 
+    # This guarantees the database is pinged well before the 7-day sleep limit.
+    - cron: '0 0 */6 * *'
+  
+  # This allows you to manually trigger the workflow from the GitHub Actions tab anytime!
+  workflow_dispatch:
+
+jobs:
+  ping-supabase:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send API Keepalive Ping
+        run: |
+          # We make a simple, lightning-fast request to fetch 1 row from your 'trips' table.
+          # This registers as valid, active traffic to the Supabase analyzer.
+          curl -s -X GET "https://lgoxncdahbijpfrzhsuf.supabase.co/rest/v1/trips?select=id&limit=1" -H "apikey: sb_publishable_C6SJIM7Qzgk9UEf-Bz64MA_XvDjXQep" -H "Authorization: Bearer sb_publishable_C6SJIM7Qzgk9UEf-Bz64MA_XvDjXQep"
