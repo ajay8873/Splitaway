@@ -18,17 +18,26 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Send API Keepalive Ping
+        continue-on-error: true
         run: |
-          curl -s -o /dev/null -w "%{http_code}" \
+          echo "Pinging Supabase REST API to keep the project active..."
+          STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
             -H "apikey: sb_publishable_C6SJIM7Qzgk9UEf-Bz64MA_XvDjXQep" \
             -H "Authorization: Bearer sb_publishable_C6SJIM7Qzgk9UEf-Bz64MA_XvDjXQep" \
-            "https://lgoxncdahbijpfrzhsuf.supabase.co/rest/v1/trips?select=id&limit=1"
+            --max-time 15 \
+            "https://lgoxncdahbijpfrzhsuf.supabase.co/rest/v1/trips?select=id&limit=1" || echo "CURL_ERROR")
+          echo "Supabase response code: $STATUS_CODE"
 
       - name: Keep GitHub Actions active (Commit Heartbeat)
+        continue-on-error: true
         run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           echo "Last ping: $(date)" > heartbeat.txt
           git add heartbeat.txt
-          # Commit and push changes if heartbeat.txt has updated
-          git diff-index --quiet HEAD || (git commit -m "chore: keep github actions active heartbeat" && git push)
+          # Commit and push changes if heartbeat.txt has updated, pulling first to avoid conflicts
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "chore: keep github actions active heartbeat"
+            git pull --rebase origin main || echo "Pull failed, attempting push anyway..."
+            git push origin main || echo "Push failed..."
+          fi
